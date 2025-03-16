@@ -22,28 +22,28 @@ class VehiculeController extends AbstractController
     private $logger;
     private $entity_manager;
     private $repository;
- 
+    private $vehicule_repository;
     /**
      * Constructeur auquel on passe en paramètre un logger
      */
-    public function __construct(LoggerInterface $logger, EntityManagerInterface $entity_manager)
+    public function __construct(LoggerInterface $logger, EntityManagerInterface $entity_manager, VehiculeRepository $vehiculeRepository)
     {
         $this->logger = $logger;
         $this->entity_manager = $entity_manager;
         // obtenir le Repository lié au véhicule depuis l'EntityManager
         $this->repository = $entity_manager->getRepository(Vehicule::class);
+        $this->vehicule_repository = $vehiculeRepository;
     }
    
+#[Route('/vehicule/lister', name: 'vehicule_lister')]
+   public function lister(Request $request): Response
+    {
+        $liste_vehicules = $this->vehicule_repository->findAllOrdered();
  
-    #[Route('/vehicule/lister', name: 'vehicule_lister')]
-    public function lister(Request $request): Response
-     {
-         $liste_vehicules = $vehicule_repository->findAllOrdered();
-  
-         return $this->render("vehicule/lister.html.twig", [
-             'liste_vehicules' => $liste_vehicules
-         ]);
-     }
+        return $this->render("vehicule/lister.html.twig", [
+            'liste_vehicules' => $liste_vehicules
+        ]);
+    }
      /**
      * Supprimer un véhicule étant donné son id
      */

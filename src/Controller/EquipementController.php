@@ -34,16 +34,18 @@ class EquipementController extends AbstractController
         $this->repository = $entity_manager->getRepository(Equipement::class);
     }
 
-         // equipement normalement
-         #[Route('/equipement/lister', name: 'equipement_lister')]
-         public function lister(Request $request): Response
-          {
-              $liste_equipements = $equipements_repository->findAllOrdered();
+    #[Route('/equipement/lister', name: 'equipement_lister')]
+    public function lister(Request $request): Response
+    {
+        // Utilisation de $this->repository pour récupérer les équipements
+        $liste_equipements = $this->repository->findAll(); // Ou bien si tu veux utiliser une méthode personnalisée : findAllOrdered()
        
-              return $this->render("equipement/lister.html.twig", [
-                  'liste_equipements' => $liste_equipements
-              ]);
-          }
+        return $this->render("equipement/lister.html.twig", [
+            'liste_equipements' => $liste_equipements
+        ]);
+    }
+    
+
           /**
      * Supprimer un équipement étant donné son id
      */
@@ -67,6 +69,7 @@ class EquipementController extends AbstractController
      /**
       * Supprimer tous les équipements (debug/test)
       */
+
      #[Route('/equipement/supprimer_tout', name: 'equipement_supprimer_tout')]
     public function supprimer_tout(): Response
      {
@@ -84,7 +87,59 @@ class EquipementController extends AbstractController
   
      // ...
  
-   
-}
+    /**
+     * Créer un nouvel équipement en affichant un formulaire
+     * de saisie des informations
+     */
+    #[Route('/equipement/ajouter', name: 'equipement_ajouter')]
+   public function ajouter(Request $request): Response
+    {
+        $equipement = new Equipement();
+        $form = $this->createForm(EquipementType::class, $equipement);
  
+        $form->handleRequest($request);
+ 
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->repository->save($equipement, true);
+ 
+            return $this->redirectToRoute('equipement_lister');
+        }
+ 
+        return $this->render('equipement/ajouter.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+ 
+    // ...
+     /**
+    * Modifier un équipement étant donné son id
+   */
+  #[Route('/equipement/modifier/{id}', name: 'equipement_modifier')]
+  public function modifier(Request $request, int $id): Response
+    {
+         $equipement = $this->repository->find($id);
+       
+        if (!$equipement) {
+            throw $this->createNotFoundException('Aucun équipement avec l\'identifiant ' . $id . ' n\'a été trouvé');
+        }
+ 
+        $form = $this->createForm(EquipementType::class, $equipement);
+ 
+        $form->handleRequest($request);
+ 
+        if ($form->isSubmitted() && $form->isValid()) {
+           
+            $this->repository->save($equipement, true);
+ 
+            return $this->redirectToRoute('equipement_lister');
+        }
+ 
+        return $this->render('equipement/modifier.html.twig', [
+            'form' => $form->createView(),
+        ]);
+ 
+    }
+
+}
+
 ?>

@@ -1,114 +1,122 @@
 <?php
 namespace App\Entity;
- 
+
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
- 
-// on a besoin de conducteur car un véhicule est associé
-// à un conducteur
-use App\Entity\Conducteur;
- 
 use App\Repository\VehiculeRepository;
- 
-// for date
 use Symfony\Component\Validator\Constraints as Assert;
- 
- 
+
 #[ORM\Entity(repositoryClass: VehiculeRepository::class)]
 class Vehicule
 {
-    // --------------------------------------------------------------
-    // Description des champs
-    // --------------------------------------------------------------
- 
     #[ORM\Id]
-   #[ORM\GeneratedValue]
-   #[ORM\Column(type: 'integer')]
-   private ?int $ve_id = null;
- 
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private ?int $ve_id = null;
+
     #[ORM\Column(type:'string', length:30)]
-   private ?string $ve_marque = null;
- 
+    #[Assert\NotBlank(message: "La marque ne peut pas être vide.")]
+    private ?string $ve_marque = null;
+
     #[ORM\Column(type:'string', length:30)]
-   private ?string $ve_modele = null;
- 
+    #[Assert\NotBlank(message: "Le modèle ne peut pas être vide.")]
+    private ?string $ve_modele = null;
+
     #[ORM\Column(type: "datetime", nullable: true)]
-   #[Assert\NotBlank]
-   #[Assert\NotNull]
-   private  $ve_date;
- 
-    // relation vers Conducteur : un véhicule possède un seul conducteur
-    #[ORM\ManyToOne(targetEntity : Conducteur::class, inversedBy: "vehicules")]
-   #[ORM\JoinColumn(nullable:false, name: 've_co_id', referencedColumnName: 'co_id')]
-   private Conducteur $ve_conducteur;
- 
-    // --------------------------------------------------------------
-    // Methodes
-    // --------------------------------------------------------------
- 
+    #[Assert\NotBlank]
+    #[Assert\NotNull]
+    private $ve_date;
+
+    #[ORM\ManyToOne(targetEntity: Conducteur::class, inversedBy: "vehicules")]
+    #[ORM\JoinColumn(nullable: true, name: 've_co_id', referencedColumnName: 'co_id')]
+    private ?Conducteur $ve_conducteur = null;
+
+    #[ORM\OneToMany(mappedBy: 'eqve_vehicule', targetEntity: EquipementVehicule::class, cascade: ['persist', 'remove'])]
+    private Collection $ve_equipement_vehicule;
+
     public function __construct()
     {
         $this->ve_date = new \DateTime();
+        $this->ve_equipement_vehicule = new ArrayCollection(); // Initialisation de la collection
     }
- 
-    function getVeId() {
- 
+
+    public function getVeId(): ?int
+    {
         return $this->ve_id;
- 
     }
- 
-    function getVeMarque() {
- 
+
+    public function getVeMarque(): ?string
+    {
         return $this->ve_marque;
- 
     }
- 
-    function setVeMarque($marque) {
- 
-        $this->ve_marque = $marque;
-   
+
+    public function setVeMarque(string $ve_marque): self
+    {
+        $this->ve_marque = $ve_marque;
         return $this;
-   
     }
- 
-    function getVeModele() {
- 
+
+    public function getVeModele(): ?string
+    {
         return $this->ve_modele;
- 
     }
- 
-    function setVeModele($modele) {
- 
-        $this->ve_modele = $modele;
-   
+
+    public function setVeModele(string $ve_modele): self
+    {
+        $this->ve_modele = $ve_modele;
         return $this;
-   
     }
- 
+
     public function getVeDate(): ?\DateTimeInterface
     {
         return $this->ve_date;
     }
- 
-    public function setVeDate(\DateTimeInterface $date): self
+
+    public function setVeDate(\DateTimeInterface $ve_date): self
     {
-        $this->ve_date = $date;
+        $this->ve_date = $ve_date;
         return $this;
     }
- 
+
     public function getVeConducteur(): ?Conducteur
     {
         return $this->ve_conducteur;
     }
- 
-    public function setVeConducteur(?Conducteur $conducteur): self
+
+    public function setVeConducteur(?Conducteur $ve_conducteur): self
     {
-        $this->ve_conducteur = $conducteur;
- 
+        $this->ve_conducteur = $ve_conducteur;
         return $this;
     }
- 
+
+    public function getVeEquipementVehicule(): Collection
+    {
+        return $this->ve_equipement_vehicule;
+    }
+
+    public function addVeEquipementVehicule(EquipementVehicule $equipement_vehicule): self
+    {
+        if (!$this->ve_equipement_vehicule->contains($equipement_vehicule)) {
+            $this->ve_equipement_vehicule[] = $equipement_vehicule;
+            $equipement_vehicule->setEqVeVehicule($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVeEquipementVehicule(EquipementVehicule $equipement_vehicule): self
+    {
+        if ($this->ve_equipement_vehicule->removeElement($equipement_vehicule)) {
+            if ($equipement_vehicule->getEqVeVehicule() === $this) {
+                $equipement_vehicule->setEqVeVehicule(null);
+            }
+        }
+
+        return $this;
+    }
 }
- 
+
+
+
 ?>

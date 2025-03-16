@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+<section>
+    <h2 class="my-4">🚗 Liste des Conducteurs</h2>
+
+    <div class="d-flex justify-content-center mb-3">
+        <a class="btn btn-primary me-2" href="/conducteur/ajouter">➕ Ajouter</a>
+        <a class="btn btn-danger" href="/conducteur/supprimer_tout" 
+           onclick="return confirm('Êtes-vous sûr de vouloir supprimer tous les conducteurs ?');">❌ Tout Supprimer</a>
+    </div>
+
+    {% if liste_conducteurs is empty %}
+        <p class="text-muted">Aucun conducteur trouvé.</p>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table table-hover table-striped table-bordered align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Id</th>
+                        <th>Nom</th>
+                        <th>Supprimer</th>
+                        <th>Modifier</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for e in liste_conducteurs %}
+                    <tr>
+                        <td>{{ e.CoId }}</td>
+                        <td>{{ e.CoNom }}</td>
+                        <td>
+                            <button 
+                                class="btn btn-link text-danger" 
+                                onclick="return conducteur_supprimer({{ e.CoId }}, '{{ e.CoNom }}');">
+                                🗑️
+                            </button>
+                        </td>
+                        <td>
+                            <button 
+                                class="btn btn-link text-success" 
+                                onclick="return conducteur_modifier({{ e.CoId }});">
+                                ✏️
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

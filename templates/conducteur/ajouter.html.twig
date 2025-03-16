@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block css %}
+    {{ parent() }}
+    <style>
+    div#conducteur_ve_date_help {
+        margin-left: 150px;
+        background: lightgray;
+    }
+    </style>
+{% endblock %}
+
+{% block main %}
+<section class="container my-5">
+    <h2 class="mb-4">Ajout d'un conducteur</h2>
+
+    {# Formulaire d'ajout d'un conducteur avec Bootstrap #}
+    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'true'}}) }}
+    
+        <div class="mb-3">
+            {{ form_label(form.co_nom, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.co_nom, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.co_nom) }}
+        </div>
+        
+        {# Ajout d'autres champs du formulaire si nécessaires... #}
+        {{ form_widget(form) }} 
+
+        <button type="submit" class="btn btn-success">Ajouter</button>
+    
+    {{ form_end(form) }}
+</section>
+{% endblock %}

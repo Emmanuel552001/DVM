@@ -3,18 +3,18 @@
 {% block main %}
     <section>
  
-    <h2>Véhicules</h2>
+    <h2>équipements</h2>
  
     <nav>
         <ul>
-            <li><a href="/equipement/creer">[+] Ajouter</a></li>
+            <li><a href="/equipement/ajouter">[+] Ajouter</a></li>
             <li><a href="/equipement/tout_supprimer">[x] Tout Supprimer</a></li>
         </ul>
     </nav>
  
-    {% if equipements_list is empty %}
+    {% if liste_equipements is empty %}
  
-        <p>Aucun véhicule trouvé.</p>
+        <p>Aucun équipement trouvé.</p>
  
     {% else %}
  
@@ -28,17 +28,16 @@
             <th style="width: 50px">Mod.</th>
            
         </tr>
-        {% for e in equipements_list %}
+        {% for e in liste_equipements %}
             <tr>
                
-                <td class="center">{{ e.VeId }}</td>
-                <td> {{ e.VeMarque }}</td>
-                <td> {{ e.VeModele }}</td>
-                <td> {{ e.VeConducteur.CoNom }}</td>
+                <td class="center">{{ e.ve_id }}</td>
+                <td> {{ e.eq_libelle }}</td>
+                <td> {{ e.eq_prix }}</td>
                 <td class="center"><img src="{{ asset('images/delete.png') }}" alt="delete"
-                    onclick="return equipement_supprimer({{ e.VeId }}, '{{ e.VeMarque }}', '{{ e.VeModele }}');" /></td>
+                    onclick="return equipement_supprimer({{ e.ve_id }}, '{{ e.eq_libelle }}', '{{ e.eq_prix }}');" /></td>
                 <td class="center"><img src="{{ asset('images/modify.png') }}" alt="modify"
-                    onclick="return equipement_modifier({{ e.VeId }}, '{{ e.VeMarque }}', '{{ e.VeModele }}');" /></td>
+                    onclick="return equipement_modifier({{ e.ve_id }}, '{{ e.eq_libelle }}', '{{ e.eq_prix }}');" /></td>
                
             </tr>
         {% endfor %}

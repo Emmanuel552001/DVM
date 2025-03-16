@@ -1,7 +1,5 @@
-{# templates/vehicule/modifier.html.twig #}
- 
 {% extends 'base.html.twig' %}
- 
+
 {% block css %}
     {{ parent() }}
     <style>
@@ -11,17 +9,36 @@
     }
     </style>
 {% endblock %}
- 
+
 {% block main %}
-    <section>
- 
-    <h2>Modification d'un véhicule</h2>
- 
-    {{ form_start(form) }}
-        {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button type="submit">Enregistrer</button>
+<section class="container my-5">
+
+    <h2 class="mb-4">Modification d'un véhicule</h2>
+
+    {# Formulaire de modification du véhicule avec Bootstrap #}
+    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'true'}}) }}
+    
+        <div class="mb-3">
+            {{ form_label(form.VeMarque, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.VeMarque, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.VeMarque) }}
+        </div>
+        
+        <div class="mb-3">
+            {{ form_label(form.VeModele, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.VeModele, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.VeModele) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.VeConducteur, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.VeConducteur, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.VeConducteur) }}
+        </div>
+
+        <button type="submit" class="btn btn-success">Enregistrer</button>
+    
     {{ form_end(form) }}
-   
- 
+
+</section>
 {% endblock %}

@@ -1,49 +1,159 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}DVM{% endblock %}</title>
-       
+
+        {# BOOTSTRAP CSS (CDN) #}
+        <link 
+            rel="stylesheet" 
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        >
+
+        {# Votre CSS personnalisé #}
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-       
+
         {% block javascripts %}
+            {# Votre JS perso #}
             <script src="{{ asset('js/javascript.js') }}"></script>
+
+            {# BOOTSTRAP JS (CDN) + Popper inclus #}
+            <script 
+                src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+            </script>
         {% endblock %}
     </head>
     <body>
-        <header>
-            <h1>Département des Véhicules à Moteur</h1>
-        </header>
- 
-        <nav>
-            <ul>
-                <li><a href="/">Accueil</a></li>
-                <li><a href="/conducteur/list">Conducteurs</a></li>
-                <li><a href="/vehicule/list">Véhicules</a></li>
-                <li><a href="/equipement/list">Equipements</a></li>
-                <li><a href="/connexion">Connexion</a></li>
-               
-            </ul>
+        {# NAVBAR BOOTSTRAP #}
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+          <div class="container-fluid">
+            <a class="navbar-brand" href="/">DVM</a>
+            <button 
+              class="navbar-toggler" 
+              type="button" 
+              data-bs-toggle="collapse" 
+              data-bs-target="#navbarContent" 
+              aria-controls="navbarContent" 
+              aria-expanded="false" 
+              aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarContent">
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                  <a class="nav-link" href="/">Accueil</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/conducteur/lister">Conducteurs</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/vehicule/lister">Véhicules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/equipement/lister">Equipements</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/connexion">Connexion</a>
+                </li>
+              </ul>
+            </div>
+          </div>
         </nav>
-        <main>
-        {% block main %}
-            <section>
-                <h2>Bienvenue sur le site DVM !</h2>
- 
-                <p>Nous gérons tous les véhicules ainsi que leurs conducteurs.</p>
- 
-                <p>Un conducteur peut détenir plusieurs véhicules.</p>
- 
-                <p>Un véhicule possède 0 à plusieurs équipements et un équipement peut
-                appartenir à 0 ou plusieurs véhicules.</p>
- 
+
+        {# CAROUSEL BOOTSTRAP #}
+        <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-indicators">
+            <button 
+              type="button" 
+              data-bs-target="#mainCarousel" 
+              data-bs-slide-to="0" 
+              class="active" 
+              aria-current="true" 
+              aria-label="Slide 1">
+            </button>
+            <button 
+              type="button" 
+              data-bs-target="#mainCarousel" 
+              data-bs-slide-to="1" 
+              aria-label="Slide 2">
+            </button>
+            <button 
+              type="button" 
+              data-bs-target="#mainCarousel" 
+              data-bs-slide-to="2" 
+              aria-label="Slide 3">
+            </button>
+          </div>
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img src="{{ asset('images/slider1.webp') }}" class="d-block w-100" alt="Slide 1">
+              <div class="carousel-caption d-none d-md-block">
+                <h5>Premier slide</h5>
+                <p>Texte de démonstration pour le premier slide.</p>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <img src="{{ asset('images/slider2.jpg') }}" class="d-block w-100" alt="Slide 2">
+              <div class="carousel-caption d-none d-md-block">
+                <h5>Deuxième slide</h5>
+                <p>Texte de démonstration pour le deuxième slide.</p>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <img src="{{ asset('images/slide3.jpg') }}" class="d-block w-100" alt="Slide 3">
+              <div class="carousel-caption d-none d-md-block">
+                <h5>Troisième slide</h5>
+                <p>Texte de démonstration pour le troisième slide.</p>
+              </div>
+            </div>
+          </div>
+          <button 
+            class="carousel-control-prev" 
+            type="button" 
+            data-bs-target="#mainCarousel" 
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Précédent</span>
+          </button>
+          <button 
+            class="carousel-control-next" 
+            type="button" 
+            data-bs-target="#mainCarousel" 
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Suivant</span>
+          </button>
+        </div>
+
+        {# CONTENU PRINCIPAL #}
+        <main class="container my-5">
+            {% block main %}
+            <section class="row">
+                <div class="col-lg-8">
+                    <h2>Bienvenue sur le site DVM !</h2>
+                    <p>Nous gérons tous les véhicules ainsi que leurs conducteurs.</p>
+                    <p>Un conducteur peut détenir plusieurs véhicules.</p>
+                    <p>Un véhicule possède 0 à plusieurs équipements et un équipement peut appartenir à 0 ou plusieurs véhicules.</p>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card">
+                        <img src="{{ asset('images/info.jpg') }}" class="card-img-top" alt="Image informative">
+                        <div class="card-body">
+                            <h5 class="card-title">Information supplémentaire</h5>
+                            <p class="card-text">Voici quelques informations supplémentaires concernant notre service. Nous offrons une gestion complète et personnalisée pour chaque utilisateur.</p>
+                            <a href="#" class="btn btn-primary">En savoir plus</a>
+                        </div>
+                    </div>
+                </div>
             </section>
-        {% endblock %}
+            {% endblock %}
         </main>
- 
-        <footer>
-            <p>Copyright 2024 by Jean-Michel Richer</p>
+
+        {# PIED DE PAGE #}
+        <footer class="bg-dark text-light text-center py-3">
+            <p class="mb-0">&copy; 2024 Jean-Michel Richer</p>
         </footer>
- 
     </body>
 </html>

@@ -1,50 +1,57 @@
 {% extends 'base.html.twig' %}
- 
+
 {% block main %}
-    <section>
- 
-    <h2>Véhicules</h2>
- 
-    <nav>
-        <ul>
-            <li><a href="/vehicule/creer">[+] Ajouter</a></li>
-            <li><a href="/vehicule/tout_supprimer">[x] Tout Supprimer</a></li>
-        </ul>
-    </nav>
- 
-    {% if vehicules_list is empty %}
- 
-        <p>Aucun véhicule trouvé.</p>
- 
+<section class="container my-5">
+
+    <h2 class="mb-4">Véhicules</h2>
+
+    <div class="mb-4">
+        <a href="/vehicule/ajouter" class="btn btn-primary me-2">[+] Ajouter</a>
+        <a href="/vehicule/tout_supprimer" 
+           class="btn btn-danger"
+           onclick="return confirm('Êtes-vous sûr de vouloir supprimer tous les véhicules ?');">[x] Tout Supprimer</a>
+    </div>
+
+    {% if liste_vehicules is empty %}
+        <p class="text-muted">Aucun véhicule trouvé.</p>
     {% else %}
- 
-    <table>
-        <tr>
-            <th style="width: 50px">Id</th>
-            <th style="width: 150px">Marque</th>
-            <th style="width: 150px">Modèle</th>
-            <th style="width: 150px">Conducteur</th>
-            <th style="width: 50px">Suppr.</th>
-            <th style="width: 50px">Mod.</th>
-           
-        </tr>
-        {% for e in vehicules_list %}
-            <tr>
-               
-                <td class="center">{{ e.VeId }}</td>
-                <td> {{ e.VeMarque }}</td>
-                <td> {{ e.VeModele }}</td>
-                <td> {{ e.VeConducteur.CoNom }}</td>
-                <td class="center"><img src="{{ asset('images/delete.png') }}" alt="delete"
-                    onclick="return vehicule_supprimer({{ e.VeId }}, '{{ e.VeMarque }}', '{{ e.VeModele }}');" /></td>
-                <td class="center"><img src="{{ asset('images/modify.png') }}" alt="modify"
-                    onclick="return vehicule_modifier({{ e.VeId }}, '{{ e.VeMarque }}', '{{ e.VeModele }}');" /></td>
-               
-            </tr>
-        {% endfor %}
-    </table>
- 
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th style="width: 50px">Id</th>
+                    <th style="width: 150px">Marque</th>
+                    <th style="width: 150px">Modèle</th>
+                    <th style="width: 150px">Conducteur</th>
+                    <th style="width: 50px">Suppr.</th>
+                    <th style="width: 50px">Mod.</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in liste_vehicules %}
+                <tr>
+                    <td class="text-center">{{ e.VeId }}</td>
+                    <td>{{ e.VeMarque }}</td>
+                    <td>{{ e.VeMarque }}</td>
+                    <td>{{ e.VeConducteur.CoNom }}</td>
+                    <td class="text-center">
+                        <button class="btn btn-link text-danger" 
+                                onclick="return vehicule_supprimer({{ e.VeId }}, '{{ e.VeMarque }}', '{{ e.VeMarque }}');">
+                            <i class="bi bi-trash"></i> Supprimer
+                        </button>
+                    </td>
+                    <td class="text-center">
+                        <button class="btn btn-link text-success" 
+                                onclick="return vehicule_modifier({{ e.VeId }}, '{{ e.VeMarque }}', '{{ e.VeMarque }}');">
+                            <i class="bi bi-pencil"></i> Modifier
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     {% endif %}
- 
-    </section>
+
+</section>
 {% endblock %}

@@ -1,15 +1,18 @@
-{# templates/conducteur/new.html.twig #}
- 
 {% extends 'base.html.twig' %}
- 
+
 {% block main %}
-    <section>
- 
-    <h2>Modification d'un conducteur</h2>
- 
-    {{ form_start(form) }}
-        {{ form_row(form.co_nom) }}
-        <button type="submit">Mettre à jour</button>
+<section class="container my-5">
+    <h2 class="mb-4">Modification d'un conducteur</h2>
+
+    {# Formulaire de modification du conducteur avec Bootstrap #}
+    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'true'}}) }}
+        <div class="mb-3">
+            {{ form_label(form.co_nom, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.co_nom, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.co_nom) }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Mettre à jour</button>
     {{ form_end(form) }}
- 
+</section>
 {% endblock %}

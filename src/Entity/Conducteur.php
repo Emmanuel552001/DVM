@@ -28,6 +28,11 @@ class Conducteur
  
     #[ORM\Column(type:'string', length:30)]
    private ?string $co_nom = null;
+
+
+    // Relation OneToMany avec l'entité Vehicule
+    #[ORM\OneToMany(mappedBy: 've_conducteur', targetEntity: Vehicule::class)]
+    private Collection $vehicules;
    
     // --------------------------------------------------------------
     // Methodes
@@ -40,9 +45,18 @@ class Conducteur
      */
     public function __construct()
     {
-       
+        $this->vehicules = new ArrayCollection();
     }
  
+        /**
+     * Obtenir la liste des véhicules associés au conducteur
+     * 
+     * @return Collection<int, Vehicule>
+     */
+    public function getVehicules(): Collection
+    {
+        return $this->vehicules;
+    }
     /**
      * Obtenir la valeur du champ identifiant (co_id)
      */

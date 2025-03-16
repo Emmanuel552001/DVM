@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Test Insertion{% endblock %}
+
+{% block body %}
+    <h1>Test Insertion et Affichage</h1>
+
+    <!-- Section Conducteurs -->
+    <h2>Liste des Conducteurs</h2>
+    <ul>
+        {% for conducteur in liste_conducteur %}
+            <li>{{ conducteur.co_nom }}</li>
+        {% else %}
+            <li>Aucun conducteur trouvé.</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Section Véhicules -->
+    <h2>Liste des Véhicules</h2>
+    <ul>
+        {% for vehicule in liste_vehicule %}
+            <li>{{ vehicule.ve_marque }} - {{ vehicule.ve_modele }} ({{ vehicule.ve_date|date('d/m/Y') }})</li>
+        {% else %}
+            <li>Aucun véhicule trouvé.</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Section Équipements -->
+    <h2>Liste des Équipements</h2>
+    <ul>
+        {% for equipement in liste_equipement %}
+            <li>{{ equipement.eq_libelle }} - {{ equipement.eq_prix }} €</li>
+        {% else %}
+            <li>Aucun équipement trouvé.</li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}
