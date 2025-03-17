@@ -1,49 +1,55 @@
 {% extends 'base.html.twig' %}
- 
+
 {% block main %}
-    <section>
- 
-    <h2>équipements</h2>
- 
-    <nav>
-        <ul>
-            <li><a href="/equipement/ajouter">[+] Ajouter</a></li>
-            <li><a href="/equipement/tout_supprimer">[x] Tout Supprimer</a></li>
-        </ul>
-    </nav>
- 
-    {% if liste_equipements is empty %}
- 
-        <p>Aucun équipement trouvé.</p>
- 
-    {% else %}
- 
-    <table>
-        <tr>
-            <th style="width: 50px">Id</th>
-            <th style="width: 150px">Marque</th>
-            <th style="width: 150px">Modèle</th>
-            <th style="width: 150px">Conducteur</th>
-            <th style="width: 50px">Suppr.</th>
-            <th style="width: 50px">Mod.</th>
-           
-        </tr>
-        {% for e in liste_equipements %}
-            <tr>
-               
-                <td class="center">{{ e.ve_id }}</td>
-                <td> {{ e.eq_libelle }}</td>
-                <td> {{ e.eq_prix }}</td>
-                <td class="center"><img src="{{ asset('images/delete.png') }}" alt="delete"
-                    onclick="return equipement_supprimer({{ e.ve_id }}, '{{ e.eq_libelle }}', '{{ e.eq_prix }}');" /></td>
-                <td class="center"><img src="{{ asset('images/modify.png') }}" alt="modify"
-                    onclick="return equipement_modifier({{ e.ve_id }}, '{{ e.eq_libelle }}', '{{ e.eq_prix }}');" /></td>
-               
-            </tr>
-        {% endfor %}
-    </table>
- 
-    {% endif %}
- 
+    <section class="container my-5">
+
+        <h2 class="mb-4">Équipements</h2>
+
+        <div class="mb-3">
+            <a href="{{ path('equipement_ajouter') }}" class="btn btn-success me-2">[+] Ajouter</a>
+            <a href="/equipement/tout_supprimer" class="btn btn-danger">[x] Tout Supprimer</a>
+        </div>
+
+        {% if liste_equipements is empty %}
+            <p>Aucun équipement trouvé.</p>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th style="width: 50px">Id</th>
+                            <th style="width: 150px">Libellé</th>
+                            <th style="width: 150px">Prix</th>
+                            <th style="width: 50px">Suppr.</th>
+                            <th style="width: 50px">Mod.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for e in liste_equipements %}
+                            <tr>
+                                <td class="text-center">{{ e.EqId }}</td>
+                                <td>{{ e.EqLibelle }}</td>
+                                <td>{{ e.EqPrix | number_format(2, ',', ' ') }} €</td>
+                                <td class="text-center">
+                                    <button 
+                                        class="btn btn-danger" 
+                                        onclick="return equipement_supprimer({{ e.EqId }}, '{{ e.EqLibelle }}', '{{ e.EqPrix }}');">
+                                        <i class="bi bi-trash"></i> Supprimer
+                                    </button>
+                                </td>
+                                <td class="text-center">
+                                    <button 
+                                        class="btn btn-warning" 
+                                        onclick="return equipement_modifier({{ e.EqId }}, '{{ e.EqLibelle }}', '{{ e.EqPrix }}');">
+                                        <i class="bi bi-pencil"></i> Modifier
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
     </section>
 {% endblock %}

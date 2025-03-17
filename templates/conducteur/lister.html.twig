@@ -6,9 +6,11 @@
 
     <div class="d-flex justify-content-center mb-3">
         <a class="btn btn-primary me-2" href="/conducteur/ajouter">➕ Ajouter</a>
-        <a class="btn btn-danger" href="/conducteur/supprimer_tout" 
+        <a class="btn btn-danger" href="/conducteur/supprimer_tout"
            onclick="return confirm('Êtes-vous sûr de vouloir supprimer tous les conducteurs ?');">❌ Tout Supprimer</a>
     </div>
+
+    <input type="text" id="search-conducteur" class="form-control mb-2" placeholder="Rechercher un conducteur...">
 
     {% if liste_conducteurs is empty %}
         <p class="text-muted">Aucun conducteur trouvé.</p>
@@ -19,25 +21,31 @@
                     <tr>
                         <th>Id</th>
                         <th>Nom</th>
+                        <th>Véhicules</th>
+                        <th>Prix Équipements</th>
                         <th>Supprimer</th>
                         <th>Modifier</th>
                     </tr>
                 </thead>
                 <tbody>
                 {% for e in liste_conducteurs %}
-                    <tr>
+                    <tr class="conducteur-row" data-id="{{ e.CoId }}">
                         <td>{{ e.CoId }}</td>
                         <td>{{ e.CoNom }}</td>
                         <td>
-                            <button 
-                                class="btn btn-link text-danger" 
+                            <button class="btn btn-info btn-sm voir-vehicules">👀 Voir</button>
+                           
+                            <ul class="vehicule-list mt-2" style="display: none;"></ul>
+                        </td>
+                        <td class="prix-equipements">0 €</td>
+                        <td>
+                            <button class="btn btn-link text-danger"
                                 onclick="return conducteur_supprimer({{ e.CoId }}, '{{ e.CoNom }}');">
                                 🗑️
                             </button>
                         </td>
                         <td>
-                            <button 
-                                class="btn btn-link text-success" 
+                            <button class="btn btn-link text-success"
                                 onclick="return conducteur_modifier({{ e.CoId }});">
                                 ✏️
                             </button>
@@ -45,8 +53,60 @@
                     </tr>
                 {% endfor %}
                 </tbody>
+                                <tfoot class="table-dark">
+                    <tr>
+                         <div class="mb-4">
+                            <a href="{{ path('conducteur_synthese') }}" class="btn btn-info">📊 Voir Synthèse</a>
+                            </div>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     {% endif %}
 </section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("search-conducteur");
+
+    searchInput.addEventListener("input", function () {
+        let filter = searchInput.value.toLowerCase();
+        document.querySelectorAll(".conducteur-row").forEach(row => {
+            let nom = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+            row.style.display = nom.includes(filter) ? "" : "none";
+        });
+    });
+
+    document.querySelectorAll(".voir-vehicules").forEach(button => {
+        button.addEventListener("click", function () {
+            let row = this.closest(".conducteur-row");
+            let conducteurId = row.dataset.id;
+            let vehiculeList = row.querySelector(".vehicule-list");
+
+            if (vehiculeList.style.display === "none") {
+                fetch(`/vehicules/conducteur/${conducteurId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        vehiculeList.innerHTML = "";
+                        data.vehicules.forEach(v => {
+                            let li = document.createElement("li");
+                            li.textContent = `${v.marque} - ${v.modele}`;
+                            vehiculeList.appendChild(li);
+                        });
+                        vehiculeList.style.display = "block";
+                    });
+
+                fetch(`/equipements/conducteur/${conducteurId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        row.querySelector(".prix-equipements").textContent = `${data.prix_total} €`;
+                    });
+            } else {
+                vehiculeList.style.display = "none";
+            }
+        });
+    });
+});
+</script>
+
 {% endblock %}

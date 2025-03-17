@@ -3,6 +3,7 @@
 namespace App\Controller;
  
 use App\Entity\Vehicule;
+use App\Entity\EquipementVehicule;
 use App\Form\VehiculeType;
 use App\Repository\VehiculeRepository;
 use App\Repository\ConducteurRepository;
@@ -134,6 +135,88 @@ class VehiculeController extends AbstractController
          ]);
   
      }
+     /**
+ * @Route("/vehicules/conducteur/{id}", name="vehicules_par_conducteur", methods={"GET"})
+ */
+public function getVehiculesParConducteur($id, VehiculeRepository $vehiculeRepository): JsonResponse
+{
+    $vehicules = $vehiculeRepository->findBy(['ve_co_id' => $id]);
+    $data = [];
+
+    foreach ($vehicules as $vehicule) {
+        $data[] = [
+            'id' => $vehicule->getVeId(),
+            'marque' => $vehicule->getVeMarque(),
+            'modele' => $vehicule->getVeModele(),
+        ];
+    }
+
+    return $this->json(['vehicules' => $data]);
+}
+/*
+#[Route('/equipement/ajouter/{vehiculeId}', name: 'equipement_ajouter')]
+public function ajouterEquipement(Request $request, int $vehiculeId): Response
+{
+    $vehicule = $this->entity_manager->getRepository(Vehicule::class)->find($vehiculeId);
+    if (!$vehicule) {
+        throw $this->createNotFoundException("Véhicule non trouvé");
+    }
+
+    $equipementVehicule = new EquipementVehicule();
+    $equipementVehicule->setEqVeVehicule($vehicule);
+
+    $form = $this->createForm(EquipementVehiculeType::class, $equipementVehicule);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $this->entity_manager->persist($equipementVehicule);
+        $this->entity_manager->flush();
+
+        return $this->redirectToRoute('vehicule_lister');
+    }
+
+    return $this->render('equipement/ajouter.html.twig', [
+        'form' => $form->createView(),
+    ]);
+}*/
+
+#[Route('/equipement/modifier/{id}', name: 'equipement_modifier')]
+public function modifierEquipement(Request $request, int $id): Response
+{
+    $equipementVehicule = $this->entity_manager->getRepository(EquipementVehicule::class)->find($id);
+    if (!$equipementVehicule) {
+        throw $this->createNotFoundException("Équipement non trouvé");
+    }
+
+    $form = $this->createForm(EquipementVehiculeType::class, $equipementVehicule);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $this->entity_manager->flush();
+
+        return $this->redirectToRoute('vehicule_lister');
+    }
+
+    return $this->render('equipement/modifier.html.twig', [
+        'form' => $form->createView(),
+    ]);
+}
+
+#[Route('/equipement/supprimer/{id}', name: 'equipement_supprimer', methods: ['DELETE'])]
+public function supprimerEquipement(int $id): JsonResponse
+{
+    $equipementVehicule = $this->entity_manager->getRepository(EquipementVehicule::class)->find($id);
+    if (!$equipementVehicule) {
+        return $this->json(['error' => 'Équipement non trouvé'], Response::HTTP_NOT_FOUND);
+    }
+
+    $this->entity_manager->remove($equipementVehicule);
+    $this->entity_manager->flush();
+
+    return $this->json(['success' => 'Équipement supprimé']);
+}
+
 
     
 }
+?>

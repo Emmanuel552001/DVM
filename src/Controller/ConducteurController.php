@@ -2,8 +2,9 @@
 // Fichier: src/Controller/ConducteurController.php
 
 namespace App\Controller;
-
+use App\Repository\EquipementVehiculeRepository;
 use App\Entity\Conducteur;
+use App\Entity\Vehicule;
 use App\Form\ConducteurType;
 use App\Repository\ConducteurRepository;
 use Doctrine\Common\Collections\Collection;
@@ -21,7 +22,7 @@ class ConducteurController extends AbstractController
     private $entity_manager;
     private $repository;
 
-    #[ORM\OneToMany(mappedBy: 've_conducteur', targetEntity: Vehicule::class)]
+    #[ORM\OneToMany(mappedBy: 'VeConducteur', targetEntity: Vehicule::class)]
     private Collection $vehicules;
 
     public function __construct(LoggerInterface $logger, EntityManagerInterface $entity_manager)
@@ -57,7 +58,7 @@ class ConducteurController extends AbstractController
        
        // Dissocier les véhicules associés au conducteur
        foreach ($conducteur->getVehicules() as $vehicule) {
-           $vehicule->setve_conducteur(null);  // Dissocier le véhicule du conducteur
+           $vehicule->setVeConducteur(null);  // Dissocier le véhicule du conducteur
            $this->entity_manager->persist($vehicule);  // Persister la modification
        }
        
@@ -91,7 +92,7 @@ class ConducteurController extends AbstractController
          if ($form->isSubmitted() && $form->isValid()) {
   
              // Check if a driver with the same name already exists
-             $conducteur_existant = $this->repository->findOneBy(['co_nom' => $conducteur->getCoNom()]);
+             $conducteur_existant = $this->repository->findOneBy(['CoNom' => $conducteur->getCoNom()]);
             
              if ($conducteur_existant) {
         
@@ -159,11 +160,60 @@ class ConducteurController extends AbstractController
   
      }
  
-     // Méthode pour récupérer les véhicules associés
-     public function getVehicules(): Collection
+     #[Route('/vehicules/conducteur/{id}', name: 'vehicules_par_conducteur', methods: ['GET'])]
+     public function getVehiculesParConducteur(int $id): JsonResponse
      {
-         return $this->vehicules;
+         $conducteur = $this->repository->find($id);
+     
+         if (!$conducteur) {
+             return $this->json(['error' => 'Conducteur non trouvé'], Response::HTTP_NOT_FOUND);
+         }
+     
+         $vehicules = array_map(function ($vehicule) {
+             return [
+                 'marque' => $vehicule->getVeMarque(),
+                 'modele' => $vehicule->getVeModele(),
+             ];
+         }, $conducteur->getVehicules()->toArray());
+     
+         return $this->json(['vehicules' => $vehicules]);
      }
+     
+     #[Route('/conducteur/synthese', name: 'conducteur_synthese')]
+     public function synthese(EquipementVehiculeRepository $equipementVehiculeRepository): Response
+{
+    $conducteurs = $this->repository->findBy([], ['CoNom' => 'ASC']); // Trier les conducteurs par ordre alphabétique
+
+    foreach ($conducteurs as $conducteur) {
+        $vehicules = $conducteur->getVehicules()->toArray(); // Utilisation du getter
+        usort($vehicules, function ($a, $b) {
+            return $a->getVeDate() <=> $b->getVeDate(); // Trier les véhicules par date d'achat
+        });
+
+        foreach ($vehicules as $vehicule) {
+            $vehiculeEntity = $this->entity_manager->getRepository(Vehicule::class)->find($vehicule->getVeId());
+            if ($vehiculeEntity) {
+                $equipements = $equipementVehiculeRepository->findByVehicule($vehiculeEntity);
+                $vehicule->totalEquipements = array_reduce($equipements, function ($total, $equipement) {
+                    return $total + ($equipement->getEqVeQuantite() * $equipement->getEqVeEquipement()->getEqPrix());
+                }, 0);
+            }
+
+            $vehicule->totalEquipements = array_reduce($equipements, function ($total, $equipement) {
+                return $total + ($equipement->getEqVeQuantite() * $equipement->getEqVeEquipement()->getEqPrix());
+            }, 0);
+        }
+
+        // Re-affectation des véhicules au conducteur si nécessaire
+        $conducteur->setVehicules(new ArrayCollection($vehicules)); // Utilisation du setter si vous remplacez la collection
+    }
+
+    return $this->render('conducteur/synthese.html.twig', [
+        'conducteurs' => $conducteurs
+    ]);
+
+}
+
  
 }
 

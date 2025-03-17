@@ -1,13 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block css %}
-    {{ parent() }}
-    <style>
-    div#vehicule_ve_date_help {
-        margin-left: 150px;
-        background: lightgray;
+<style>
+    .search-conducteur {
+        width: 300px;
+        margin-bottom: 10px;
     }
-    </style>
+</style>
 {% endblock %}
 
 {% block main %}
@@ -15,30 +14,72 @@
 
     <h2 class="mb-4">Ajout d'un véhicule</h2>
 
-    {# Formulaire d'ajout d'un véhicule avec Bootstrap #}
     {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'true'}}) }}
-    
+
         <div class="mb-3">
-            {{ form_label(form.ve_marque, null, {'label_attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.ve_marque, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.ve_marque) }}
-        </div>
-        
-        <div class="mb-3">
-            {{ form_label(form.ve_modele, null, {'label_attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.ve_modele, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.ve_modele) }}
+            {{ form_label(form.search_conducteur, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.search_conducteur, {'attr': {'class': 'form-control', 'id': 'searchConducteur'}}) }}
         </div>
 
         <div class="mb-3">
-            {{ form_label(form.ve_conducteur, null, {'label_attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.ve_conducteur, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.ve_conducteur) }}
+            {{ form_label(form.VeConducteur, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.VeConducteur, {'attr': {'class': 'form-control conducteur-select'}}) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.vehicules_conducteur, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.vehicules_conducteur, {'attr': {'class': 'form-control vehicules-liste'}}) }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Prix total des équipements :</label>
+            <input type="text" id="prixTotal" class="form-control" readonly>
         </div>
 
         <button type="submit" class="btn btn-primary">Ajouter</button>
-    
+
     {{ form_end(form) }}
 
 </section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let conducteurSelect = document.querySelector(".conducteur-select");
+    let vehiculesListe = document.querySelector(".vehicules-liste");
+    let searchConducteur = document.getElementById("searchConducteur");
+    let prixTotal = document.getElementById("prixTotal");
+
+    // Rechercher un conducteur
+    searchConducteur.addEventListener("input", function () {
+        let filter = searchConducteur.value.toLowerCase();
+        for (let option of conducteurSelect.options) {
+            let text = option.textContent.toLowerCase();
+            option.style.display = text.includes(filter) ? "" : "none";
+        }
+    });
+
+    // Charger les véhicules liés au conducteur sélectionné
+    conducteurSelect.addEventListener("change", function () {
+        fetch(`/vehicules/conducteur/${this.value}`)
+            .then(response => response.json())
+            .then(data => {
+                vehiculesListe.innerHTML = "";
+                data.vehicules.forEach(vehicule => {
+                    let option = document.createElement("option");
+                    option.value = vehicule.id;
+                    option.textContent = vehicule.marque + " " + vehicule.modele;
+                    vehiculesListe.appendChild(option);
+                });
+            });
+
+        // Charger le prix total des équipements
+        fetch(`/equipements/conducteur/${this.value}`)
+            .then(response => response.json())
+            .then(data => {
+                prixTotal.value = data.prix_total + " €";
+            });
+    });
+});
+</script>
+
 {% endblock %}
