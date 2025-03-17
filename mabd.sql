@@ -94,3 +94,24 @@ CREATE TABLE `vehicule` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2024-09-23  9:36:00
+-- Désactiver les vérifications des clés étrangères pour effectuer les modifications
+/*SET FOREIGN_KEY_CHECKS = 0;
+
+-- Supprimer les anciennes contraintes de clés étrangères
+ALTER TABLE equipement_vehicule
+    DROP FOREIGN KEY FK_36FEF13984F274EA,  -- Clé étrangère pour eqve_equipement_id
+    DROP FOREIGN KEY FK_36FEF1397E57CABE;  -- Clé étrangère pour eqve_vehicule_id
+
+-- Ajouter les nouvelles contraintes avec ON DELETE CASCADE
+ALTER TABLE equipement_vehicule
+    ADD CONSTRAINT FK_36FEF13984F274EA
+    FOREIGN KEY (eqve_equipement_id)
+    REFERENCES equipement (eq_id)
+    ON DELETE CASCADE,
+    ADD CONSTRAINT FK_36FEF1397E57CABE
+    FOREIGN KEY (eqve_vehicule_id)
+    REFERENCES vehicule (ve_id)
+    ON DELETE CASCADE;
+
+-- Réactiver les vérifications des clés étrangères
+SET FOREIGN_KEY_CHECKS = 1;*/

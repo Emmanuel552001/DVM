@@ -49,23 +49,30 @@ class EquipementController extends AbstractController
           /**
      * Supprimer un équipement étant donné son id
      */
-    #[Route('/equipement/supprimer/{id}', name: 'equipement_supprimer')]
-    public function supprimer( $id ): Response
-     {
-         // Récupérer l'équipement par son id
-         $equipement = $this->repository->find($id);
-  
-         if (!$equipement) {
-             throw $this->createNotFoundException('Aucun équipement avec l\'identifiant ' . $id . ' n\'a été trouvé');
-         }
-  
-         // Suppression du equipement
-         $this->entity_manager->remove($equipement);
-         $this->entity_manager->flush();
-  
-         return $this->redirectToRoute('equipement_lister');
-     }
-  
+/**
+ * Supprimer un équipement étant donné son id
+ */
+#[Route('/equipement/supprimer/{id}', name: 'equipement_supprimer')]
+public function supprimer($id): Response
+{
+    // Récupérer l'équipement par son id
+    $equipement = $this->repository->find($id);
+
+    if (!$equipement) {
+        throw $this->createNotFoundException('Aucun équipement avec l\'identifiant ' . $id . ' n\'a été trouvé');
+    }
+
+    // Supprimer les relations dans la table equipement_vehicule
+    $connection = $this->entity_manager->getConnection();
+    $connection->executeQuery('DELETE FROM equipement_vehicule WHERE eqve_equipement_id = ?', [$id]);
+
+    // Supprimer l'équipement
+    $this->entity_manager->remove($equipement);
+    $this->entity_manager->flush();
+
+    return $this->redirectToRoute('equipement_lister');
+}
+
      /**
       * Supprimer tous les équipements (debug/test)
       */

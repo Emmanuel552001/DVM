@@ -26,12 +26,12 @@ class EquipementRepository extends ServiceEntityRepository
  
     /**
      * @return Equipement[] Returns an array of Equipement objects
-     * ordered by their label ($EqLibelle)
+     * ordered by their label ($eq_Libelle)
      */
     public function findAllOrderedByName()
     {
         $r = $this->createQueryBuilder('c')
-            ->orderBy('c.EqLibelle', 'ASC')
+            ->orderBy('c.eq_libelle', 'ASC')
             ->getQuery()
             ->getResult();
         return $r;

@@ -38,7 +38,7 @@ class ConducteurRepository extends ServiceEntityRepository
     public function findAllOrderedByName()
     {
         $r = $this->createQueryBuilder('c')
-            ->orderBy('c.CoNom', 'ASC')
+            ->orderBy('c.co_nom', 'ASC')
             ->getQuery()
             ->getResult();
         return $r;

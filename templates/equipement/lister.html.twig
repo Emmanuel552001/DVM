@@ -3,18 +3,18 @@
 {% block main %}
     <section class="container my-5">
 
-        <h2 class="mb-4">Équipements</h2>
+        <h2 class="my-4">🛠️ Liste des Équipements</h2>
 
-        <div class="mb-3">
-            <a href="{{ path('equipement_ajouter') }}" class="btn btn-success me-2">[+] Ajouter</a>
-            <a href="/equipement/tout_supprimer" class="btn btn-danger">[x] Tout Supprimer</a>
+        <div class="d-flex justify-content-center mb-3">
+            <a class="btn btn-success me-2" href="/equipement/ajouter">➕ Ajouter</a>
+            <a class="btn btn-danger" href="/equipement/tout_supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer tous les équipements ?');">❌ Tout Supprimer</a>
         </div>
 
         {% if liste_equipements is empty %}
-            <p>Aucun équipement trouvé.</p>
+            <p class="text-muted">Aucun équipement trouvé.</p>
         {% else %}
             <div class="table-responsive">
-                <table class="table table-striped table-bordered">
+                <table class="table table-striped table-bordered align-middle">
                     <thead class="table-dark">
                         <tr>
                             <th style="width: 50px">Id</th>
@@ -29,20 +29,13 @@
                             <tr>
                                 <td class="text-center">{{ e.EqId }}</td>
                                 <td>{{ e.EqLibelle }}</td>
-                                <td>{{ e.EqPrix | number_format(2, ',', ' ') }} €</td>
+                                <td>{{ e.EqPrix }}</td>
                                 <td class="text-center">
-                                    <button 
-                                        class="btn btn-danger" 
-                                        onclick="return equipement_supprimer({{ e.EqId }}, '{{ e.EqLibelle }}', '{{ e.EqPrix }}');">
-                                        <i class="bi bi-trash"></i> Supprimer
-                                    </button>
+                                    <a href="{{ path('equipement_supprimer', {'id': e.EqId}) }}" class="btn btn-link text-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet équipement ?');">🗑️</a>
                                 </td>
                                 <td class="text-center">
-                                    <button 
-                                        class="btn btn-warning" 
-                                        onclick="return equipement_modifier({{ e.EqId }}, '{{ e.EqLibelle }}', '{{ e.EqPrix }}');">
-                                        <i class="bi bi-pencil"></i> Modifier
-                                    </button>
+                                    <a href="{{ path('equipement_modifier', {'id': e.EqId}) }}" class="btn btn-link text-danger">✏️</a>
+
                                 </td>
                             </tr>
                         {% endfor %}
@@ -50,6 +43,6 @@
                 </table>
             </div>
         {% endif %}
-
+        
     </section>
 {% endblock %}

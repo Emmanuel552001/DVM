@@ -1,16 +1,36 @@
-{# templates/equipement/ajouter.html.twig #}
- 
 {% extends 'base.html.twig' %}
- 
+
+{% block css %}
+    {{ parent() }}
+    <style>
+        div#conducteur_ve_date_help {
+            margin-left: 150px;
+            background: lightgray;
+        }
+    </style>
+{% endblock %}
+
 {% block main %}
-    <section>
- 
-    <h2>Ajout d'un équipement</h2>
- 
-    {{ form_start(form) }}
-        {{ form_row(form.EqLibelle) }}
-        {{ form_row(form.EqPrix) }}
-        <button type="submit">Ajouter</button>
+<section class="container my-5">
+    <h2 class="mb-4">Ajout d'un équipement</h2>
+
+    {# Formulaire d'ajout d'un équipement avec Bootstrap #}
+    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'true'}}) }}
+    
+        <div class="mb-3">
+            {{ form_label(form.eq_libelle, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.eq_libelle, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.eq_libelle) }}
+        </div>
+        
+        <div class="mb-3">
+            {{ form_label(form.eq_prix, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.eq_prix, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.eq_prix) }}
+        </div>
+
+        <button type="submit" class="btn btn-success">Ajouter</button>
+    
     {{ form_end(form) }}
- 
+</section>
 {% endblock %}
