@@ -6,8 +6,8 @@
         <h2 class="my-4">🛠️ Liste des Équipements</h2>
 
         <div class="d-flex justify-content-center mb-3">
-            <a class="btn btn-success me-2" href="/equipement/ajouter">➕ Ajouter</a>
-            <a class="btn btn-danger" href="/equipement/tout_supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer tous les équipements ?');">❌ Tout Supprimer</a>
+            <a class="btn btn-success me-2" href="/equipement/ajouter">Ajouter</a>
+            <a class="btn btn-danger" href="/equipement/tout_supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer tous les équipements ?');">Tout Supprimer</a>
         </div>
 
         {% if liste_equipements is empty %}
@@ -20,8 +20,8 @@
                             <th style="width: 50px">Id</th>
                             <th style="width: 150px">Libellé</th>
                             <th style="width: 150px">Prix</th>
-                            <th style="width: 50px">Suppr.</th>
                             <th style="width: 50px">Mod.</th>
+                            <th style="width: 50px">Suppr.</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -31,11 +31,11 @@
                                 <td>{{ e.EqLibelle }}</td>
                                 <td>{{ e.EqPrix }}</td>
                                 <td class="text-center">
-                                    <a href="{{ path('equipement_supprimer', {'id': e.EqId}) }}" class="btn btn-link text-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet équipement ?');">🗑️</a>
+                                    <a href="{{ path('equipement_modifier', {'id': e.EqId}) }}" class="btn btn-link text-success">Modifier</a>
+
                                 </td>
                                 <td class="text-center">
-                                    <a href="{{ path('equipement_modifier', {'id': e.EqId}) }}" class="btn btn-link text-danger">✏️</a>
-
+                                    <a href="{{ path('equipement_supprimer', {'id': e.EqId}) }}" class="btn btn-link text-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet équipement ?');">Supprimer</a>
                                 </td>
                             </tr>
                         {% endfor %}

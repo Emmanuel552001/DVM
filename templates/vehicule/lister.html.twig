@@ -6,10 +6,10 @@
     <h2 class="mb-4">Véhicules</h2>
 
     <div class="mb-4">
-        <a href="/vehicule/ajouter" class="btn btn-primary me-2">[+] Ajouter</a>
+        <a href="/vehicule/ajouter" class="btn btn-primary me-2">Ajouter</a>
         <a href="/vehicule/tout_supprimer" 
            class="btn btn-danger"
-           onclick="return confirm('Êtes-vous sûr de vouloir supprimer tous les véhicules ?');">[x] Tout Supprimer</a>
+           onclick="return confirm('Êtes-vous sûr de vouloir supprimer tous les véhicules ?');">Tout Supprimer</a>
     </div>
 
     {% if liste_vehicules is empty %}
@@ -23,8 +23,10 @@
                     <th style="width: 150px">Marque</th>
                     <th style="width: 150px">Modèle</th>
                     <th style="width: 150px">Conducteur</th>
-                    <th style="width: 50px">Suppr.</th>
+                    <th style="width: 50px">Detail</th>
                     <th style="width: 50px">Mod.</th>
+                    <th style="width: 50px">Suppr.</th>
+
                 </tr>
             </thead>
             <tbody>
@@ -34,17 +36,20 @@
                     <td>{{ e.VeMarque }}</td>
                     <td>{{ e.VeModele }}</td>
                     <td>{{ e.VeConducteur.CoNom }}</td>
-                    <td class="text-center">
-                        <button class="btn btn-link text-danger" 
-                                onclick="return vehicule_supprimer({{ e.VeId }}, '{{ e.VeMarque }}', '{{ e.VeModele }}');">
-                            <i class="bi bi-trash"></i> Supprimer
-                        </button>
+                                        <td class="text-center">
+                    <a href="{{ path('vehicule_detail', {'id': e.VeId}) }}" class="btn btn-info">Détail</a>
                     </td>
                     <td class="text-center">
-                        <button class="btn btn-link text-success" 
-                                onclick="return vehicule_modifier({{ e.VeId }}, '{{ e.VeMarque }}', '{{ e.VeModele }}');">
-                            <i class="bi bi-pencil"></i> Modifier
-                        </button>
+                        <a href="{{ path('vehicule_modifier', {'id': e.VeId}) }}" class="btn btn-link text-success">
+    <i class="bi bi-pencil"></i> Modifier
+</a>
+                    </td>
+                    <td class="text-center">
+                       <a href="{{ path('vehicule_supprimer', {'id': e.VeId}) }}" 
+   class="btn btn-link text-danger" 
+   onclick="return confirm('Voulez-vous vraiment supprimer {{ e.VeMarque }} {{ e.VeModele }} ?');">
+    <i class="bi bi-trash"></i> Supprimer
+</a>
                     </td>
                 </tr>
                 {% endfor %}

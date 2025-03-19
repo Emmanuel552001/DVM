@@ -27,7 +27,28 @@ class EquipementVehiculeRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-   
+    
+    public function findByConducteur(int $conducteurId): array
+{
+    return $this->createQueryBuilder('ev')
+        ->join('ev.eqve_vehicule', 'v')
+        ->join('v.ve_conducteur', 'c')
+        ->where('c.co_id = :conducteurId')
+        ->setParameter('conducteurId', $conducteurId)
+        ->getQuery()
+        ->getResult();
+}
+    
+public function findByVehicule(Vehicule $vehicule): array
+{
+    return $this->createQueryBuilder('ev')
+        ->where('ev.eqve_vehicule = :vehicule')
+        ->setParameter('vehicule', $vehicule)
+        ->getQuery()
+        ->getResult();
+}
+
 }
  
+
 ?>

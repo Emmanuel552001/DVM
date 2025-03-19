@@ -19,23 +19,27 @@
     {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'true'}}) }}
     
         <div class="mb-3">
-            {{ form_label(form.VeMarque, null, {'label_attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.VeMarque, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.VeMarque) }}
+            {{ form_label(form.ve_marque, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.ve_marque, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.ve_marque) }}
         </div>
         
         <div class="mb-3">
-            {{ form_label(form.VeModele, null, {'label_attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.VeModele, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.VeModele) }}
+            {{ form_label(form.ve_modele, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.ve_modele, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.ve_modele) }}
         </div>
 
         <div class="mb-3">
-            {{ form_label(form.VeConducteur, null, {'label_attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.VeConducteur, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.VeConducteur) }}
+            {{ form_label(form.ve_conducteur, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.ve_conducteur, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.ve_conducteur) }}
         </div>
-
+        <div class="mb-3">
+            {{ form_label(form.ve_date, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.ve_date, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.ve_date) }}
+        </div>
         <button type="submit" class="btn btn-success">Enregistrer</button>
     
     {{ form_end(form) }}

@@ -10,26 +10,53 @@
                 <th>Conducteur</th>
                 <th>Véhicule</th>
                 <th>Date d'Achat</th>
+                <th>Détail des Équipements</th>
                 <th>Total Équipements (€)</th>
             </tr>
         </thead>
         <tbody>
             {% set somme_totale = 0 %}
             {% for conducteur in conducteurs %}
-                {% set conducteur_span = conducteur.vehicules|length %}
+                {% set conducteur_span = conducteur.vehiculesTries|length %}
                 {% if conducteur_span == 0 %}
                     <tr>
                         <td>{{ conducteur.CoNom }}</td>
-                        <td colspan="3" class="text-center text-muted">Aucun véhicule</td>
+                        <td colspan="4" class="text-center text-muted">Aucun véhicule</td>
                     </tr>
                 {% else %}
-                    {% for vehicule in conducteur.vehicules %}
+                    {% for vehicule in conducteur.vehiculesTries %}
                         <tr>
                             {% if loop.first %}
                                 <td rowspan="{{ conducteur_span }}">{{ conducteur.CoNom }}</td>
                             {% endif %}
                             <td>{{ vehicule.VeMarque }} - {{ vehicule.VeModele }}</td>
                             <td>{{ vehicule.VeDate|date('d/m/Y') }}</td>
+                            <td>
+                                {% if vehicule.detailsEquipements is not empty %}
+                                    <table class="table table-sm table-bordered mb-0">
+                                        <thead>
+                                            <tr class="table-secondary">
+                                                <th>Équipement</th>
+                                                <th>Quantité</th>
+                                                <th>Prix Unitaire (€)</th>
+                                                <th>Sous-total (€)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for equipement in vehicule.detailsEquipements %}
+                                                <tr>
+                                                    <td>{{ equipement.libelle }}</td>
+                                                    <td>{{ equipement.quantite }}</td>
+                                                    <td>{{ equipement.prix }}</td>
+                                                    <td>{{ equipement.sousTotal }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% else %}
+                                    <span class="text-muted">Aucun équipement</span>
+                                {% endif %}
+                            </td>
                             <td>{{ vehicule.totalEquipements }} €</td>
                         </tr>
                         {% set somme_totale = somme_totale + vehicule.totalEquipements %}
@@ -39,7 +66,7 @@
         </tbody>
         <tfoot>
             <tr class="table-warning">
-                <td colspan="3" class="text-end"><strong>Somme totale des équipements :</strong></td>
+                <td colspan="4" class="text-end"><strong>Somme totale des équipements :</strong></td>
                 <td><strong>{{ somme_totale }} €</strong></td>
             </tr>
         </tfoot>

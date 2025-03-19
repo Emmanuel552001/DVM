@@ -3,10 +3,10 @@
 {% block css %}
     {{ parent() }}
     <style>
-    div#conducteur_ve_date_help {
-        margin-left: 150px;
-        background: lightgray;
-    }
+        div#conducteur_ve_date_help {
+            margin-left: 150px;
+            background: lightgray;
+        }
     </style>
 {% endblock %}
 
@@ -30,4 +30,12 @@
     
     {{ form_end(form) }}
 </section>
+
+{# Displaying the error message in a JavaScript pop-up if there is one #}
+{% if app.session.flashBag.has('error') %}
+    <script type="text/javascript">
+        alert("{{ app.session.flashBag.get('error')[0] }}");
+    </script>
+{% endif %}
+
 {% endblock %}

@@ -2,10 +2,11 @@
 // Fichier: src/Controller/ConducteurController.php
 
 namespace App\Controller;
-
+use App\Entity\Vehicule;
 use App\Entity\Conducteur;
 use App\Form\ConducteurType;
 use App\Repository\ConducteurRepository;
+use App\Repository\EquipementVehiculeRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -164,8 +165,78 @@ class ConducteurController extends AbstractController
      {
          return $this->vehicules;
      }
- 
+     #[Route('/conducteur/{id}/vehicules', name: 'conducteur_vehicules')]
+     public function voirVehicules(int $id, EquipementVehiculeRepository $equipementRepo): Response
+     {
+         $conducteur = $this->repository->find($id);
+         if (!$conducteur) {
+             throw $this->createNotFoundException("Conducteur non trouvé");
+         }
+     
+         $vehicules = $conducteur->getVehicules();
+     
+         // Calculer le prix total des équipements du conducteur
+         $equipements = $equipementRepo->findByConducteur($id);
+         $prixTotal = array_reduce($equipements, fn($total, $eqVe) =>
+             $total + ($eqVe->getEqVeQuantite() * $eqVe->getEqVeEquipement()->getEqPrix()), 0
+         );
+     
+         return $this->render('conducteur/vehicules.html.twig', [
+             'conducteur' => $conducteur,
+             'vehicules' => $vehicules,
+             'prix_total' => $prixTotal,
+         ]);
+     }
+     
+
+     #[Route('/conducteur/synthese', name: 'conducteur_synthese')]
+public function synthese(EquipementVehiculeRepository $equipementVehiculeRepository): Response
+{
+    $conducteurs = $this->repository->findBy([], ['co_nom' => 'ASC']); // Trier les conducteurs
+    $totalGeneralEquipements = 0;
+
+    foreach ($conducteurs as $conducteur) {
+        // Trier les véhicules du conducteur par date d'achat
+        $vehicules = $conducteur->getVehicules()->toArray();
+        usort($vehicules, fn($a, $b) => $a->getVeDate() <=> $b->getVeDate());
+
+        foreach ($vehicules as $vehicule) {
+            // Récupérer les équipements du véhicule
+            $equipements = $equipementVehiculeRepository->findByVehicule($vehicule);
+            $totalEquipements = 0;
+            $detailsEquipements = [];
+
+            foreach ($equipements as $equipementVehicule) {
+                $quantite = $equipementVehicule->getEqVeQuantite();
+                $prixUnitaire = $equipementVehicule->getEqVeEquipement()->getEqPrix();
+                $libelle = $equipementVehicule->getEqVeEquipement()->getEqLibelle();
+                $sousTotal = $quantite * $prixUnitaire;
+                $totalEquipements += $sousTotal;
+
+                $detailsEquipements[] = [
+                    'libelle' => $libelle,
+                    'quantite' => $quantite,
+                    'prix' => $prixUnitaire,
+                    'sousTotal' => $sousTotal,
+                ];
+            }
+
+            // Injecter les infos préparées dans le véhicule (propriété dynamique pour la vue)
+            $vehicule->totalEquipements = $totalEquipements;
+            $vehicule->detailsEquipements = $detailsEquipements;
+
+            // Ajouter au total général
+            $totalGeneralEquipements += $totalEquipements;
+        }
+
+        // Injecter les véhicules triés dans le conducteur
+        $conducteur->vehiculesTries = $vehicules;
+    }
+
+    return $this->render('conducteur/synthese.html.twig', [
+        'conducteurs' => $conducteurs,
+        'totalGeneralEquipements' => $totalGeneralEquipements,
+    ]);
 }
 
- 
-?>
+}

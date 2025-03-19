@@ -5,10 +5,12 @@
     <h2 class="my-4">🚗 Liste des Conducteurs</h2>
 
     <div class="d-flex justify-content-center mb-3">
-        <a class="btn btn-primary me-2" href="/conducteur/ajouter">➕ Ajouter</a>
-        <a class="btn btn-danger" href="/conducteur/supprimer_tout" 
-           onclick="return confirm('Êtes-vous sûr de vouloir supprimer tous les conducteurs ?');">❌ Tout Supprimer</a>
+        <a class="btn btn-primary me-2" href="/conducteur/ajouter">Ajouter</a>
+        <a class="btn btn-danger" href="/conducteur/supprimer_tout"
+           onclick="return confirm('Êtes-vous sûr de vouloir supprimer tous les conducteurs ?');">Tout Supprimer</a>
     </div>
+
+    <input type="text" id="search-conducteur" class="form-control mb-2" placeholder="Rechercher un conducteur...">
 
     {% if liste_conducteurs is empty %}
         <p class="text-muted">Aucun conducteur trouvé.</p>
@@ -19,34 +21,62 @@
                     <tr>
                         <th>Id</th>
                         <th>Nom</th>
-                        <th>Supprimer</th>
+                        <th>Véhicules</th>
                         <th>Modifier</th>
+                        <th>Supprimer</th>
                     </tr>
                 </thead>
                 <tbody>
                 {% for e in liste_conducteurs %}
-                    <tr>
+                    <tr class="conducteur-row" data-id="{{ e.CoId }}">
                         <td>{{ e.CoId }}</td>
                         <td>{{ e.CoNom }}</td>
-                        <td>
-                            <button 
-                                class="btn btn-link text-danger" 
-                                onclick="return conducteur_supprimer({{ e.CoId }}, '{{ e.CoNom }}');">
-                                🗑️
-                            </button>
+                        <td class="text-center">
+                           <a href="{{ path('conducteur_vehicules', {'id': e.CoId}) }}" class="btn btn-info btn-sm">Voir</a>
+
+
                         </td>
                         <td>
-                            <button 
-                                class="btn btn-link text-success" 
+                            <button class="btn btn-link text-success"
                                 onclick="return conducteur_modifier({{ e.CoId }});">
-                                ✏️
+                                Modifier
+                            </button>
+                        </td>
+                         <td>
+                            <button class="btn btn-link text-danger"
+                                onclick="return conducteur_supprimer({{ e.CoId }}, '{{ e.CoNom }}');">
+                                Supprimer
                             </button>
                         </td>
                     </tr>
                 {% endfor %}
                 </tbody>
+                                                <tfoot class="table-dark">
+                    <tr>
+                         <div class="mb-4">
+                            <a href="{{ path('conducteur_synthese') }}" class="btn btn-info">📊 Voir Synthèse</a>
+                            </div>
+                    </tr>
+               
             </table>
         </div>
     {% endif %}
 </section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("search-conducteur");
+
+    searchInput.addEventListener("input", function () {
+        let filter = searchInput.value.toLowerCase();
+        document.querySelectorAll(".conducteur-row").forEach(row => {
+            let nom = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+            row.style.display = nom.includes(filter) ? "" : "none";
+        });
+    });
+});
+</script>
+
 {% endblock %}
+
+

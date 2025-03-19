@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+<section class="container my-5">
+
+    <h2 class="mb-4">Détail du Véhicule</h2>
+
+<p><strong>Marque :</strong> {{ vehicule.VeMarque }}</p>
+<p><strong>Modèle :</strong> {{ vehicule.VeModele }}</p>
+<p><strong>Date d'acquisition :</strong> {{ vehicule.VeDate|date('d/m/Y') }}</p>
+
+<h2>Équipements associés</h2>
+
+{% if equipementsVehicule|length > 0 %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Libellé</th>
+            <th>Quantité</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for EqVe in equipementsVehicule %}
+            <tr>
+                <td>{{ EqVe.EqVeEquipement.EqLibelle }}</td>
+                <td>{{ EqVe.EqVeQuantite }}</td>
+                <td>
+                    <a href="{{ path('modifier_equipement_vehicule', {'id': EqVe.EqVeId}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                    <a href="{{ path('supprimer_equipement_vehicule', {'id': EqVe.EqVeId}) }}" class="btn btn-danger btn-sm">Supprimer</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Aucun équipement associé à ce véhicule.</p>
+{% endif %}
+
+<a href="{{ path('ajouter_equipement_vehicule', {'id': vehicule.VeId}) }}" class="btn btn-success">Ajouter un Équipement</a>
+<a href="{{ path('vehicule_lister') }}" class="btn btn-secondary">Retour</a>
+{% endblock %}

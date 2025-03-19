@@ -135,5 +135,104 @@ class VehiculeController extends AbstractController
   
      }
 
+
+     #[Route("/conducteur/{id}/equipements/prix_total", name: "conducteur_equipements_prix_total", methods: ["GET"])]
+public function getPrixTotalEquipements(int $id, EquipementVehiculeRepository $repo): JsonResponse
+{
+    $equipements = $repo->findByConducteur($id);
+    $prixTotal = array_reduce($equipements, fn($total, $eqVe) => $total + ($eqVe->getEqVeQuantite() * $eqVe->getEqVeEquipement()->getEqPrix()), 0);
+    return $this->json(['prix_total' => $prixTotal]);
+}
+
+
+#[Route('/vehicule/detail/{id}', name: 'vehicule_detail')]
+public function afficherDetail($id, VehiculeRepository $vehiculeRepository): Response
+{
+    $vehicule = $vehiculeRepository->find($id);
+
+    if (!$vehicule) {
+        throw $this->createNotFoundException('Véhicule non trouvé');
+    }
+
+    return $this->render('vehicule/detail.html.twig', [
+        'vehicule' => $vehicule,
+        'equipementsVehicule' => $vehicule->getVeEquipementVehicule()
+    ]);
+}
+/*
+#[Route('/equipementVehicule/ajouter/{id}', name: 'ajouter_equipement_vehicule')]
+public function ajouter_equipement_vehicule(Request $request, int $id): Response
+{
+    // Récupérer le véhicule par son ID
+    $vehicule = $this->getDoctrine()->getRepository(Vehicule::class)->find($id);
+
+    // Vérifier si le véhicule existe
+    if (!$vehicule) {
+        throw $this->createNotFoundException('Véhicule non trouvé');
+    }
+
+    // Créer un nouvel objet EquipementVehicule
+    $equipementVehicule = new EquipementVehicule();
+
+    // Créer et traiter le formulaire pour l'ajout de l'équipement
+    $form = $this->createForm(EquipementVehiculeType::class, $equipementVehicule);
+    $form->handleRequest($request);
+
+    // Si le formulaire est soumis et valide, ajouter l'équipement au véhicule
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Ajouter l'équipement au véhicule
+        $vehicule->addVeEquipementVehicule($equipementVehicule);
+
+        // Sauvegarder l'équipement et la relation avec le véhicule
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($equipementVehicule);
+        $entityManager->flush();
+
+        // Rediriger vers la page de détail du véhicule ou une autre page
+        return $this->redirectToRoute('detail_vehicule', ['id' => $id]);
+    }
+
+    // Rendre la vue avec le formulaire
+    return $this->render('equipement_vehicule/ajouter_equipement_vehicule.html.twig', [
+        'form' => $form->createView(),
+    ]);
+}
+
+     #[Route('/equipementVehicule/modifier/{id}', name: 'modifier_equipement_vehicule')]
+     public function modifier_equipement_vehicule(Request $request, int $id): Response
+     {
+         // Récupérer l'équipement véhicule par son ID
+         $equipementVehicule = $this->getDoctrine()->getRepository(EquipementVehicule::class)->find($id);
+     
+         // Vérifier si l'équipement existe
+         if (!$equipementVehicule) {
+             throw $this->createNotFoundException('Équipement de véhicule non trouvé');
+         }
+     
+         // Créer et traiter le formulaire
+         $form = $this->createForm(EquipementVehiculeType::class, $equipementVehicule);
+         $form->handleRequest($request);
+     
+         // Si le formulaire est soumis et valide, enregistrer les modifications
+         if ($form->isSubmitted() && $form->isValid()) {
+             $entityManager = $this->getDoctrine()->getManager();
+             $entityManager->flush();
+     
+             // Rediriger l'utilisateur après la modification
+             return $this->redirectToRoute('equipement_vehicule_liste');
+         }
+     
+         // Rendre la vue avec le formulaire
+         return $this->render('equipement_vehicule/modifier_equipement_vehicule.html.twig', [
+             'form' => $form->createView(),
+         ]);
+     }
+     
+#[Route('/equipementVehicule/supprimer/{id}', name: 'supprimer_equipement_vehicule')]
+public function supprimer_equipement_vehicule(Request $request, int $id): Response
+     {}
+
+
+*/
     
 }

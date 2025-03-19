@@ -34,6 +34,8 @@ class EquipementVehicule
     // nombre d'équipements dans le véhicule (ex: 4)
     #[ORM\Column(name: "eqve_quantite", type: "integer")]
    private ?int $eqve_quantite = null;
+
+   
  
     function __construct() {
  
@@ -52,7 +54,7 @@ class EquipementVehicule
         return $this;
     }
  
-    function getEqVeEquipement() : Equipement{
+    function getEqVeEquipement() : ?Equipement{
         return $this->eqve_equipement;
     }
  

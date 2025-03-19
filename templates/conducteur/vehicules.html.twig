@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+<section class="container my-5">
+    <h2>🚗 Véhicules de {{ conducteur.CoNom }}</h2>
+
+    {% if vehicules is empty %}
+        <p class="text-muted">Aucun véhicule trouvé pour ce conducteur.</p>
+    {% else %}
+        <ul class="list-group">
+            {% for v in vehicules %}
+                <li class="list-group-item">
+                    {{ v.VeMarque }} - {{ v.VeModele }} ({{ v.VeDate|date('d/m/Y') }})
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <div class="mt-4 alert alert-info">
+        💰 Prix total des équipements : <strong>{{ prix_total }} €</strong>
+    </div>
+
+    <a href="{{ path('conducteur_lister') }}" class="btn btn-secondary">🔙 Retour</a>
+</section>
+{% endblock %}

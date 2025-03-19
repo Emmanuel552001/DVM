@@ -1,0 +1,24 @@
+<div class="container my-4">
+    {% for conducteur in conducteurs %}
+        <div class="card mb-3">
+            <div class="card-header">
+                <h3 class="card-title">{{ conducteur.coNom }}</h3>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for vehicule in conducteur.vehiculesTries %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ vehicule.veMarque }} {{ vehicule.veModele }}
+                            <span class="badge bg-primary rounded-pill">{{ vehicule.totalEquipements }}€</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endfor %}
+
+    <div class="alert alert-info mt-4">
+        <h4 class="alert-heading">Total général des équipements :</h4>
+        <p class="lead">{{ totalGeneralEquipements }}€</p>
+    </div>
+</div>
